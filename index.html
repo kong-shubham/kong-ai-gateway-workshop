@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kong AI Gateway 2.0 Workshop</title>
     
-    <!-- Import Funnel Sans from Google Fonts -->
+    <!-- Import Fonts from Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Funnel+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -17,13 +17,12 @@
             theme: {
                 extend: {
                     colors: {
-                        'kong-dark': '#002821', // Kong Dark Green
-                        'kong-lime': '#CCFF00', // Kong Electric Lime
-                        'kong-bg': '#FFFFFF',
-                        'kong-sidebar': '#F8F9FA',
+                        'kong-dark': '#002117', // Kong Dark Green from prompt
+                        'kong-lime': '#C6F91C', // Kong Electric Lime from prompt
+                        'kong-bg': '#F9FAFB',
+                        'kong-sidebar': '#FFFFFF',
                     },
                     fontFamily: {
-                        // Apply Funnel Sans as the default sans-serif font
                         sans: ['"Funnel Sans"', 'sans-serif'],
                         mono: ['"Fira Code"', 'monospace'],
                     }
@@ -35,25 +34,19 @@
     <style>
         body {
             font-family: 'Funnel Sans', sans-serif;
-            color: #002821;
-            background-color: #FFFFFF;
+            color: #002117;
+            background-color: #F9FAFB;
         }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-
-        /* Typography Enhancements for Funnel Sans */
-        h1, h2, h3, h4, h5, h6 {
+        /* Typography */
+        h1, h2, h3, h4 {
             font-weight: 700;
-            letter-spacing: -0.02em;
+            color: #002117;
         }
 
-        /* Code Block Styling */
+        /* Code Blocks */
         pre {
-            background-color: #111827; /* Dark background */
+            background-color: #111827;
             color: #f8fafc;
             border-radius: 0.5rem;
             padding: 1.25rem;
@@ -63,34 +56,37 @@
             line-height: 1.6;
             margin-top: 1rem;
             margin-bottom: 1.5rem;
-            border-left: 4px solid #CCFF00; /* Kong Lime Accent */
+            border-left: 4px solid #C6F91C;
             position: relative;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
+        
         code { font-family: 'Fira Code', monospace; }
+        
         :not(pre) > code {
-            background-color: #f1f5f9;
-            color: #002821;
+            background-color: #e5e7eb;
+            color: #002117;
             padding: 0.2rem 0.4rem;
             border-radius: 0.25rem;
             font-size: 0.875em;
             font-weight: 600;
         }
 
-        /* Sidebar Navigation */
+        /* Navigation Links */
         .nav-link {
             transition: all 0.2s ease;
             border-left: 4px solid transparent;
             font-weight: 500;
+            cursor: pointer;
         }
         .nav-link.active {
-            background-color: #CCFF00;
-            color: #002821;
+            background-color: #f3f4f6;
+            color: #002117;
             font-weight: 700;
-            border-left: 4px solid #002821;
+            border-left: 4px solid #C6F91C;
         }
         .nav-link:hover:not(.active) {
-            background-color: #e2e8f0;
+            background-color: #f9fafb;
         }
 
         /* Copy Button */
@@ -109,310 +105,162 @@
             transition: background-color 0.2s;
         }
         .copy-btn:hover { background-color: #4b5563; }
-
-        /* Animations */
-        .content-section {
-            display: none;
-            animation: fadeIn 0.4s ease-out forwards;
-            opacity: 0;
-            transform: translateY(10px);
-        }
-        .content-section.active {
-            display: block;
-        }
-        @keyframes fadeIn {
-            to { opacity: 1; transform: translateY(0); }
-        }
     </style>
 </head>
-<body class="flex h-screen overflow-hidden antialiased text-kong-dark">
+<body class="flex h-screen overflow-hidden antialiased">
 
-    <!-- Sidebar -->
     <aside class="w-72 bg-kong-sidebar border-r border-gray-200 flex flex-col flex-shrink-0 h-full shadow-sm z-10 hidden md:flex">
-        <div class="p-6 border-b border-gray-200">
-            <!-- Specific requested image logo -->
-            <img src="primary-logo-dark-green-electric-lime-BG@2x.png" alt="Kong Logo" class="h-10 mb-4 rounded shadow-sm object-cover bg-kong-lime">
-            <h1 class="text-xl font-bold text-kong-dark">AI Gateway 2.0</h1>
+        <div class="p-6 border-b border-gray-100 flex flex-col items-start">
+            <!-- Logo container with dark background for contrast if needed, but per prompt using clean white -->
+            <div class="bg-kong-dark w-full p-3 rounded-lg flex items-center justify-center mb-4">
+                <img src="primary-logo-dark-green-electric-lime-BG@2x.png" alt="Kong Logo" class="h-8 object-contain">
+            </div>
+            <h1 class="text-xl font-bold">AI Gateway 2.0</h1>
             <p class="text-sm text-gray-500 mt-1">Interactive Workshop</p>
         </div>
 
-        <nav class="flex-1 overflow-y-auto py-4 space-y-1" id="sidebar-nav">
-            <button data-target="s-llm" class="nav-link active w-full text-left px-6 py-3 text-kong-dark">1. LLM Quickstart</button>
-            <button data-target="s-mcp" class="nav-link w-full text-left px-6 py-3 text-kong-dark">2. MCP & Tool Mapping</button>
-            <button data-target="s-agent" class="nav-link w-full text-left px-6 py-3 text-kong-dark">3. AI Agent (A2A)</button>
-            <button data-target="s-rate" class="nav-link w-full text-left px-6 py-3 text-kong-dark">4. Rate Limit AI Traffic</button>
-            <button data-target="s-monetize" class="nav-link w-full text-left px-6 py-3 text-kong-dark">5. Monetize LLM Traffic</button>
+        <nav class="flex-1 overflow-y-auto py-4 space-y-1">
+            <div class="nav-link active w-full text-left px-6 py-3">
+                Start with AI Gateway 2.0
+            </div>
         </nav>
     </aside>
 
     <!-- Mobile Header -->
     <div class="md:hidden absolute top-0 w-full bg-kong-sidebar border-b border-gray-200 p-4 flex justify-between items-center z-20 shadow-sm">
-        <img src="primary-logo-dark-green-electric-lime-BG@2x.png" alt="Kong Logo" class="h-8 rounded bg-kong-lime">
-        <select id="mobile-nav" class="bg-white border border-gray-300 text-kong-dark text-sm rounded-md p-2 font-sans font-medium focus:outline-none focus:ring-2 focus:ring-kong-lime">
-            <option value="s-llm">1. LLM Quickstart</option>
-            <option value="s-mcp">2. MCP & Tool Mapping</option>
-            <option value="s-agent">3. AI Agent (A2A)</option>
-            <option value="s-rate">4. Rate Limit AI Traffic</option>
-            <option value="s-monetize">5. Monetize LLM Traffic</option>
-        </select>
+        <div class="bg-kong-dark p-1 rounded">
+            <img src="primary-logo-dark-green-electric-lime-BG@2x.png" alt="Kong Logo" class="h-6 object-contain">
+        </div>
+        <span class="font-bold text-sm">AI Gateway Workshop</span>
     </div>
 
-    <!-- Main Content Area -->
-    <main class="flex-1 h-full overflow-y-auto bg-kong-bg relative pt-16 md:pt-0">
+    <main class="flex-1 h-full overflow-y-auto relative pt-16 md:pt-0">
         <div class="max-w-4xl mx-auto p-6 md:p-12 pb-24">
             
-            <!-- Section 1: LLM Quickstart -->
-            <section id="s-llm" class="content-section active">
-                <div class="mb-8">
-                    <span class="text-xs font-bold uppercase tracking-wider text-gray-500 bg-gray-100 px-2 py-1 rounded">Step 1</span>
-                    <h2 class="text-3xl md:text-4xl font-bold mt-3 mb-4 text-kong-dark">LLM Quickstart</h2>
-                    <p class="text-lg text-gray-600 leading-relaxed">
-                        Configure Kong to act as your AI proxy. We will create an AI Provider definition, map a specific model, and test the connection.
-                    </p>
+            <section id="start-ai-gateway">
+                <h1 class="text-3xl md:text-4xl font-bold mb-10 pb-4 border-b border-gray-200">Start with AI Gateway 2.0</h1>
+
+                <div class="mb-12">
+                    <h2 class="text-2xl font-bold mb-4 text-kong-dark">Section 1: Prerequisites</h2>
+                    <ul class="list-disc list-outside ml-6 space-y-6 text-gray-700 text-lg">
+                        <li>
+                            <p class="mb-2"><strong>AI Gateway running:</strong> Create a Konnect personal access token. Export token:</p>
+                            <pre><code>export KONNECT_TOKEN='YOUR_KONNECT_PAT'</code></pre>
+                        </li>
+                        <li>
+                            <p class="mb-2"><strong>Run quickstart:</strong></p>
+                            <pre><code>curl -Ls https://get.konghq.com/ai | bash -s -- -k $KONNECT_TOKEN</code></pre>
+                        </li>
+                        <li>
+                            <p class="mb-2"><strong>Export resulting vars:</strong></p>
+<pre><code>export AI_GATEWAY_ID=your-gateway-id
+export KONNECT_TOKEN=$KONNECT_TOKEN
+export KONNECT_CONTROL_PLANE_NAME=ai-quickstart
+export KONNECT_CONTROL_PLANE_URL=https://us.api.konghq.com
+export KONNECT_PROXY_URL='http://localhost:8000'</code></pre>
+                        </li>
+                        <li>
+                            <p class="mb-2"><strong>kongctl v1.16.0+:</strong> Install and verify:</p>
+                            <pre><code>kongctl version</code></pre>
+                        </li>
+                        <li>
+                            <p class="mb-2"><strong>OpenAI:</strong> Get an API key and export:</p>
+                            <pre><code>export OPENAI_API_KEY='YOUR_OPENAI_API_KEY'</code></pre>
+                        </li>
+                    </ul>
                 </div>
 
-                <h3 class="text-xl font-bold mb-3">1. Create AI Model Provider</h3>
-                <p class="text-gray-600 mb-3">Define the base provider (e.g., OpenAI) configuration.</p>
-                <pre><code>kongctl apply generic-openai \
-  --provider openai \
-  --auth-header-name Authorization \
-  --auth-header-value "Bearer $OPENAI_API_KEY"</code></pre>
+                <div class="mb-12">
+                    <h2 class="text-2xl font-bold mb-4 text-kong-dark">Section 2: Create an AI Model Provider entity</h2>
+                    <ul class="list-disc list-outside ml-6 space-y-6 text-gray-700 text-lg">
+                        <li>
+                            <p class="mb-2">Create provider to define connection. Set auth header:</p>
+                            <pre><code>export OPENAI_AUTH_HEADER="Bearer $OPENAI_API_KEY"</code></pre>
+                        </li>
+                        <li>
+                            <p class="mb-2">Apply config:</p>
+<pre><code>kongctl apply -f - --auto-approve --pat "$KONNECT_TOKEN" &lt;&lt; 'EOF'
+ai_gateway_model_providers:
+  - ref: generic-openai
+    ai_gateway: !lookup {id: !env AI_GATEWAY_ID}
+    name: generic-openai
+    display_name: "generic-openai"
+    type: openai
+    config:
+      auth:
+        type: basic
+        headers:
+          - name: Authorization
+            value: !secret {source: !env OPENAI_AUTH_HEADER}
+EOF</code></pre>
+                        </li>
+                    </ul>
+                </div>
 
-                <h3 class="text-xl font-bold mb-3 mt-8">2. Create AI Model</h3>
-                <p class="text-gray-600 mb-3">Map a specific endpoint and model to the provider created above.</p>
-                <pre><code>kongctl apply my-gpt-4o \
-  --provider generic-openai \
-  --model-name gpt-4o \
-  --route-path /v1/chat/completions</code></pre>
+                <div class="mb-12">
+                    <h2 class="text-2xl font-bold mb-4 text-kong-dark">Section 3: Create an AI Model entity</h2>
+                    <ul class="list-disc list-outside ml-6 space-y-6 text-gray-700 text-lg">
+                        <li>
+                            <p class="mb-2">Declare upstream models and routing:</p>
+<pre><code>kongctl apply -f - --auto-approve --pat "$KONNECT_TOKEN" &lt;&lt; 'EOF'
+ai_gateway_models:
+  - ref: my-gpt-4o
+    ai_gateway: !lookup {id: !env AI_GATEWAY_ID}
+    name: my-gpt-4o
+    display_name: "my-gpt-4o"
+    type: model
+    formats:
+      - type: openai
+    config:
+      route:
+        paths:
+          - /v1
+        model:
+          body_param: model
+          values:
+            - my-gpt-4o
+      targets:
+        - name: gpt-4o
+          provider: generic-openai
+          config:
+            type: openai
+      policies: []
+      capabilities:
+        - generate
+EOF</code></pre>
+                        </li>
+                    </ul>
+                </div>
 
-                <h3 class="text-xl font-bold mb-3 mt-8">3. Validate the Connection</h3>
-                <p class="text-gray-600 mb-3">Send a standard prompt through your Kong Gateway.</p>
-                <pre><code>curl -X POST http://localhost:8000/v1/chat/completions \
-  -H "Content-Type: application/json" \
-  -d '{
+                <div class="mb-12">
+                    <h2 class="text-2xl font-bold mb-4 text-kong-dark">Section 4: Validate</h2>
+                    <ul class="list-disc list-outside ml-6 space-y-6 text-gray-700 text-lg">
+                        <li>
+                            <p class="mb-2">Send a chat request to verify setup:</p>
+<pre><code>curl -X POST "$KONNECT_PROXY_URL/v1/chat/completions" \
+  --no-progress-meter --fail-with-body \
+  -H "Accept: application/json"\
+  -H "Content-Type: application/json"\
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  --json '{
     "messages": [
       {
         "role": "user",
-        "content": "Why is the sky blue?"
+        "content": "Say this is a test!"
       }
-    ]
+    ],
+    "model": "my-gpt-4o"
   }'</code></pre>
-
-                <div class="mt-12 flex justify-end border-t pt-6">
-                    <button onclick="switchTab('s-mcp')" class="bg-kong-lime text-kong-dark font-bold py-3 px-6 rounded hover:bg-[#b8e600] transition flex items-center shadow-sm">
-                        Next: MCP Quickstart &rarr;
-                    </button>
-                </div>
-            </section>
-
-            <!-- Section 2: MCP Quickstart -->
-            <section id="s-mcp" class="content-section">
-                <div class="mb-8">
-                    <span class="text-xs font-bold uppercase tracking-wider text-gray-500 bg-gray-100 px-2 py-1 rounded">Step 2</span>
-                    <h2 class="text-3xl md:text-4xl font-bold mt-3 mb-4 text-kong-dark">MCP Quickstart & Tool Mapping</h2>
-                    <p class="text-lg text-gray-600 leading-relaxed">
-                        The Model Context Protocol (MCP) standardizes how models connect to data and APIs. Here, we map an existing REST API to an MCP tool.
-                    </p>
+                        </li>
+                    </ul>
                 </div>
 
-                <h3 class="text-xl font-bold mb-3">1. Map API to MCP Tools</h3>
-                <p class="text-gray-600 mb-3">Apply the <code>ai-mcp-server</code> plugin to teach the LLM how to format requests for your internal API (e.g., a customer data lookup).</p>
-                <pre><code>curl -X POST http://localhost:8001/plugins \
-  --header "Content-Type: application/json" \
-  --data '{
-    "name": "ai-mcp-server",
-    "config": {
-      "tools": [
-        {
-          "name": "get_customer_info",
-          "description": "Fetch customer details by email address.",
-          "route_url": "http://internal-api.local/customers",
-          "method": "GET",
-          "parameters": {
-            "type": "object",
-            "properties": {
-              "email": {
-                "type": "string",
-                "description": "Customer email address"
-              }
-            },
-            "required": ["email"]
-          },
-          "url_query_mapping": {
-            "email": "email_query"
-          }
-        }
-      ]
-    }
-  }'</code></pre>
-
-                <div class="mt-12 flex justify-between border-t pt-6">
-                    <button onclick="switchTab('s-llm')" class="text-gray-600 hover:text-kong-dark font-bold py-3 px-4 transition">
-                        &larr; Back
-                    </button>
-                    <button onclick="switchTab('s-agent')" class="bg-kong-lime text-kong-dark font-bold py-3 px-6 rounded hover:bg-[#b8e600] transition flex items-center shadow-sm">
-                        Next: AI Agent &rarr;
-                    </button>
-                </div>
-            </section>
-
-            <!-- Section 3: AI Agent -->
-            <section id="s-agent" class="content-section">
-                <div class="mb-8">
-                    <span class="text-xs font-bold uppercase tracking-wider text-gray-500 bg-gray-100 px-2 py-1 rounded">Step 3</span>
-                    <h2 class="text-3xl md:text-4xl font-bold mt-3 mb-4 text-kong-dark">Get Started with AI Agent (A2A)</h2>
-                    <p class="text-lg text-gray-600 leading-relaxed">
-                        With tools mapped via MCP, you can now enable agentic behavior. The Kong AI Agent automatically intercepts tool calls from the LLM, executes the external API on its behalf (Agent-to-Agent/A2A), and returns the context.
-                    </p>
-                </div>
-
-                <h3 class="text-xl font-bold mb-3">1. Enable Agent Routing</h3>
-                <p class="text-gray-600 mb-3">Configure the <code>ai-agent</code> plugin on your route to orchestrate tool execution automatically.</p>
-                <pre><code>curl -X POST http://localhost:8001/plugins \
-  --header "Content-Type: application/json" \
-  --data '{
-    "name": "ai-agent",
-    "config": {
-      "auto_execute_tools": true,
-      "max_tool_calls": 5,
-      "system_prompt": "You are a helpful assistant. Use provided tools if necessary to answer user queries."
-    }
-  }'</code></pre>
-
-                <div class="bg-gray-50 border-l-4 border-kong-dark p-4 mt-6 text-sm text-gray-700">
-                    <strong class="text-kong-dark">How A2A Works in Kong:</strong> When a user asks "What is alice@example.com's order status?", the LLM attempts to use the <code>get_customer_info</code> tool. Kong intercepts this request, queries your internal API directly, and feeds the response back to the LLM to formulate the final answer—all in a single round-trip from the client's perspective.
-                </div>
-
-                <div class="mt-12 flex justify-between border-t pt-6">
-                    <button onclick="switchTab('s-mcp')" class="text-gray-600 hover:text-kong-dark font-bold py-3 px-4 transition">
-                        &larr; Back
-                    </button>
-                    <button onclick="switchTab('s-rate')" class="bg-kong-lime text-kong-dark font-bold py-3 px-6 rounded hover:bg-[#b8e600] transition flex items-center shadow-sm">
-                        Next: Rate Limiting &rarr;
-                    </button>
-                </div>
-            </section>
-
-            <!-- Section 4: Rate Limit -->
-            <section id="s-rate" class="content-section">
-                <div class="mb-8">
-                    <span class="text-xs font-bold uppercase tracking-wider text-gray-500 bg-gray-100 px-2 py-1 rounded">Step 4</span>
-                    <h2 class="text-3xl md:text-4xl font-bold mt-3 mb-4 text-kong-dark">Rate Limit AI Traffic</h2>
-                    <p class="text-lg text-gray-600 leading-relaxed">
-                        Limit traffic based on AI token consumption rather than simple HTTP request counts. This is crucial for protecting against runaway A2A loops or expensive LLM prompt abuse.
-                    </p>
-                </div>
-
-                <h3 class="text-xl font-bold mb-3">1. Apply Advanced AI Rate Limiting</h3>
-                <p class="text-gray-600 mb-3">Add the <code>ai-rate-limiting-advanced</code> plugin. Here we limit consumers to 10,000 total tokens per minute.</p>
-                <pre><code>curl -X POST http://localhost:8001/plugins \
-  --header "Content-Type: application/json" \
-  --data '{
-    "name": "ai-rate-limiting-advanced",
-    "config": {
-      "limit": [10000],
-      "window_size": [60],
-      "identifier": "ip",
-      "strategy": "local",
-      "tokens_count_strategy": "total_tokens"
-    }
-  }'</code></pre>
-
-                <div class="mt-12 flex justify-between border-t pt-6">
-                    <button onclick="switchTab('s-agent')" class="text-gray-600 hover:text-kong-dark font-bold py-3 px-4 transition">
-                        &larr; Back
-                    </button>
-                    <button onclick="switchTab('s-monetize')" class="bg-kong-lime text-kong-dark font-bold py-3 px-6 rounded hover:bg-[#b8e600] transition flex items-center shadow-sm">
-                        Next: Monetization &rarr;
-                    </button>
-                </div>
-            </section>
-
-            <!-- Section 5: Monetize -->
-            <section id="s-monetize" class="content-section">
-                <div class="mb-8">
-                    <span class="text-xs font-bold uppercase tracking-wider text-gray-500 bg-gray-100 px-2 py-1 rounded">Step 5</span>
-                    <h2 class="text-3xl md:text-4xl font-bold mt-3 mb-4 text-kong-dark">Monetize AI LLM Traffic</h2>
-                    <p class="text-lg text-gray-600 leading-relaxed">
-                        To monetize your AI APIs, you need precise metering. The AI Gateway parses responses from LLM providers to extract token counts and model information, which can be captured via telemetry and logs.
-                    </p>
-                </div>
-
-                <h3 class="text-xl font-bold mb-3">1. Enable Telemetry for Metering</h3>
-                <p class="text-gray-600 mb-3">By enabling standard logging plugins (like <code>http-log</code>), Kong automatically embeds AI usage metrics (prompt tokens, completion tokens, cost) which can be routed to your billing or analytics systems.</p>
-                <pre><code>curl -X POST http://localhost:8001/plugins \
-  --header "Content-Type: application/json" \
-  --data '{
-    "name": "http-log",
-    "config": {
-      "http_endpoint": "https://billing.internal/metering/webhooks",
-      "method": "POST",
-      "custom_fields_by_lua": {
-        "ai_metrics": "return kong.log.serialize().ai"
-      }
-    }
-  }'</code></pre>
-
-                <div class="bg-kong-lime/20 border-l-4 border-kong-lime p-6 mt-8 rounded-r">
-                    <h4 class="font-bold text-kong-dark text-lg mb-2">🎉 You've Completed the Workshop</h4>
-                    <p class="text-gray-700">
-                        You've successfully set up the AI Proxy, mapped tools via MCP, orchestrated an AI Agent, protected your endpoints with Token Rate Limiting, and enabled monetization telemetry.
-                    </p>
-                </div>
-
-                <div class="mt-12 flex justify-start border-t pt-6">
-                    <button onclick="switchTab('s-rate')" class="text-gray-600 hover:text-kong-dark font-bold py-3 px-4 transition">
-                        &larr; Back
-                    </button>
-                </div>
             </section>
         </div>
     </main>
 
     <script>
-        // Tab switching logic
-        function switchTab(targetId) {
-            // Hide all sections
-            document.querySelectorAll('.content-section').forEach(sec => {
-                sec.classList.remove('active');
-            });
-            // Show target section
-            const targetElement = document.getElementById(targetId);
-            if(targetElement) {
-                targetElement.classList.add('active');
-            }
-
-            // Update sidebar navigation active state
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.classList.remove('active');
-                if (link.dataset.target === targetId) {
-                    link.classList.add('active');
-                }
-            });
-
-            // Update mobile dropdown
-            const mobileNav = document.getElementById('mobile-nav');
-            if (mobileNav) {
-                mobileNav.value = targetId;
-            }
-
-            // Scroll to top
-            document.querySelector('main').scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // Sidebar click listeners
-        document.querySelectorAll('.nav-link').forEach(button => {
-            button.addEventListener('click', (e) => {
-                switchTab(e.target.dataset.target);
-            });
-        });
-
-        // Mobile select listener
-        document.getElementById('mobile-nav').addEventListener('change', (e) => {
-            switchTab(e.target.value);
-        });
-
-        // Add Copy to Clipboard functionality
+        // Add Copy to Clipboard functionality to all pre > code blocks
         document.querySelectorAll('pre').forEach(pre => {
             const button = document.createElement('button');
             button.innerText = 'Copy';
@@ -420,24 +268,29 @@
             
             button.addEventListener('click', () => {
                 const code = pre.querySelector('code').innerText;
+                
+                // Fallback approach for iframe environments
+                const textArea = document.createElement("textarea");
+                textArea.value = code;
+                textArea.style.position = "fixed";
+                textArea.style.left = "-999999px";
+                textArea.style.top = "-999999px";
+                document.body.appendChild(textArea);
+                textArea.select();
+                
                 try {
-                    navigator.clipboard.writeText(code).then(() => {
-                        button.innerText = 'Copied!';
-                        setTimeout(() => button.innerText = 'Copy', 2000);
-                    });
-                } catch (err) {
-                    // Fallback for document.execCommand
-                    const textArea = document.createElement("textarea");
-                    textArea.value = code;
-                    document.body.appendChild(textArea);
-                    textArea.select();
-                    try {
-                        document.execCommand('copy');
-                        button.innerText = 'Copied!';
-                        setTimeout(() => button.innerText = 'Copy', 2000);
-                    } catch (e) {
-                        button.innerText = 'Error';
-                    }
+                    document.execCommand('copy');
+                    button.innerText = 'Copied!';
+                    button.style.backgroundColor = '#002117'; // Kong Dark
+                    button.style.color = '#C6F91C'; // Kong Lime
+                    setTimeout(() => {
+                        button.innerText = 'Copy';
+                        button.style.backgroundColor = '';
+                        button.style.color = '';
+                    }, 2000);
+                } catch (e) {
+                    button.innerText = 'Error';
+                } finally {
                     document.body.removeChild(textArea);
                 }
             });
