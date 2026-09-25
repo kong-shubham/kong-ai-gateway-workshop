@@ -1,547 +1,476 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kong AI Gateway 2.0 Workshop</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kong AI Gateway 2.0 Workshop</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Funnel+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --kong-dark-green: #002117;
+      --kong-electric-lime: #C6F91C;
+      --code-bg: #00120d;
+      --text-main: #e2e8f0; /* Light grey for readable body text on dark bg */
+      --border-color: #004d35;
+      --panel-bg: rgba(255, 255, 255, 0.03);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Funnel Sans', sans-serif;
+      background-color: var(--kong-dark-green);
+      color: var(--text-main);
+      display: flex;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 280px;
+      background-color: var(--kong-dark-green);
+      border-right: 1px solid var(--border-color);
+      height: 100vh;
+      position: fixed;
+      overflow-y: auto;
+      padding: 2rem 1rem;
+      box-sizing: border-box;
+      z-index: 100;
+    }
+
+    .sidebar img {
+      max-width: 100%;
+      height: auto;
+      margin-bottom: 2rem;
+      display: block;
+      border-radius: 4px;
+    }
+
+    .sidebar nav {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .sidebar a {
+      display: block;
+      color: var(--text-main);
+      text-decoration: none;
+      padding: 0.75rem 1rem;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+      border-left: 3px solid transparent;
+    }
+
+    .sidebar a:hover {
+      background-color: rgba(198, 249, 28, 0.1);
+      color: var(--kong-electric-lime);
+    }
+
+    .sidebar a.active {
+      background-color: rgba(198, 249, 28, 0.15);
+      color: var(--kong-electric-lime);
+      border-left: 3px solid var(--kong-electric-lime);
+      font-weight: 700;
+    }
+
+    .content {
+      margin-left: 280px;
+      padding: 3rem 4rem 6rem;
+      max-width: 1000px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    h1, h2, h3, h4 {
+      color: var(--kong-electric-lime);
+      font-family: 'Funnel Sans', sans-serif;
+      margin-top: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-size: 2.75rem;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 1rem;
+      margin-top: 0;
+    }
+
+    h2 {
+      font-size: 1.75rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.5rem;
+    }
+
+    h3 {
+      font-size: 1.25rem;
+    }
+
+    p, li {
+      font-size: 1.05rem;
+      margin-bottom: 1rem;
+    }
+
+    ul, ol {
+      padding-left: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    ol li::marker, ul li::marker {
+      color: var(--kong-electric-lime);
+      font-weight: bold;
+    }
+
+    strong {
+      color: var(--kong-electric-lime);
+    }
+
+    pre {
+      background-color: var(--code-bg);
+      color: var(--kong-electric-lime);
+      padding: 1.25rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      border: 1px solid var(--border-color);
+      font-size: 0.95rem;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+    }
+
+    code {
+      font-family: 'Courier New', Courier, monospace;
+    }
     
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Funnel+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
+    p code, li code {
+      background-color: var(--code-bg);
+      color: var(--kong-electric-lime);
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      border: 1px solid var(--border-color);
+      font-size: 0.9em;
+    }
+
+    .overview-img {
+      width: 100%;
+      height: auto;
+      margin: 2rem 0;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      background-color: #000;
+    }
+
+    .note-box {
+      background-color: rgba(198, 249, 28, 0.05);
+      border-left: 4px solid var(--kong-electric-lime);
+      padding: 1.25rem 1.5rem;
+      margin: 2rem 0;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.95rem;
+    }
+
+    section {
+      scroll-margin-top: 2rem;
+      margin-bottom: 4rem;
+      background: var(--panel-bg);
+      padding: 2.5rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
     
-    <style>
-        :root {
-            --kong-dark-green: #002117;
-            --kong-electric-lime: #C6F91C;
-            --bg-light: #f8f9fa;
-            --text-dark: #333333;
-            --code-bg: #111827;
-        }
-        
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: 'Funnel Sans', sans-serif;
-            background-color: var(--bg-light);
-            color: var(--text-dark);
-            margin: 0;
-            display: flex;
-            min-height: 100vh;
-        }
-
-        /* Sidebar Styling */
-        aside {
-            background-color: var(--kong-dark-green);
-            color: white;
-            width: 320px;
-            position: fixed;
-            height: 100vh;
-            overflow-y: auto;
-            border-right: 2px solid #e5e7eb;
-            z-index: 10;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-        }
-
-        .nav-link {
-            display: block;
-            padding: 12px 24px;
-            color: rgba(255, 255, 255, 0.7);
-            text-decoration: none;
-            transition: all 0.2s ease-in-out;
-            cursor: pointer;
-            border-left: 4px solid transparent;
-            font-size: 0.95rem;
-        }
-
-        .nav-link:hover {
-            background-color: rgba(255, 255, 255, 0.05);
-            color: var(--kong-electric-lime);
-        }
-
-        .nav-link.active {
-            background-color: rgba(198, 249, 28, 0.1);
-            color: var(--kong-electric-lime);
-            font-weight: 600;
-            border-left: 4px solid var(--kong-electric-lime);
-        }
-
-        /* Main Content Styling */
-        main {
-            margin-left: 320px;
-            padding: 60px;
-            width: calc(100% - 320px);
-            max-width: 1200px;
-        }
-
-        .content-section {
-            margin-bottom: 80px;
-            background: white;
-            padding: 48px;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
-            border: 1px solid rgba(0, 33, 23, 0.05);
-            scroll-margin-top: 40px;
-        }
-
-        /* Typography & Elements */
-        h1 {
-            font-size: 2.25rem;
-            font-weight: 800;
-            color: var(--kong-dark-green);
-            margin-bottom: 2rem;
-            border-bottom: 3px solid var(--kong-electric-lime);
-            padding-bottom: 0.75rem;
-            display: inline-block;
-        }
-
-        h2 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-top: 2.5rem;
-            margin-bottom: 1rem;
-            color: var(--kong-dark-green);
-        }
-        
-        h3 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-top: 1.5rem;
-            margin-bottom: 0.75rem;
-            color: var(--kong-dark-green);
-        }
-
-        p, li {
-            line-height: 1.8;
-            margin-bottom: 1rem;
-            font-size: 1.05rem;
-        }
-
-        ul, ol {
-            padding-left: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        ol li::marker {
-            font-weight: 700;
-            color: var(--kong-dark-green);
-        }
-
-        .note-box {
-            background-color: rgba(198, 249, 28, 0.15);
-            border-left: 4px solid var(--kong-dark-green);
-            padding: 16px 20px;
-            border-radius: 4px 8px 8px 4px;
-            margin: 1.5rem 0;
-            font-size: 0.95rem;
-        }
-
-        /* Code Blocks */
-        pre {
-            background-color: var(--code-bg);
-            color: #e5e7eb;
-            padding: 1.5rem;
-            border-radius: 0.75rem;
-            overflow-x: auto;
-            font-family: monospace;
-            font-size: 0.9rem;
-            margin: 1.5rem 0;
-            border: 1px solid #374151;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
-            line-height: 1.5;
-        }
-        
-        code {
-            font-family: monospace;
-            background-color: rgba(0, 33, 23, 0.05);
-            padding: 0.2rem 0.4rem;
-            border-radius: 0.25rem;
-            color: var(--kong-dark-green);
-            font-weight: 600;
-            font-size: 0.9em;
-        }
-        
-        pre code {
-            background-color: transparent;
-            padding: 0;
-            color: inherit;
-            font-weight: normal;
-        }
-        
-        .code-comment { color: #6b7280; }
-        .code-keyword { color: #f472b6; }
-        .code-string { color: #a7f3d0; }
-    </style>
+    hr {
+      display: none;
+    }
+  </style>
 </head>
 <body>
 
-    <aside>
-        <div class="p-6 pb-2">
-            <img src="primary-logo-dark-green-electric-lime-BG@2x.png" alt="Kong Logo" class="w-full h-auto object-contain">
-        </div>
-        
-        <nav class="mt-4 flex flex-col gap-1 pb-10">
-            <a href="#section-0" class="nav-link active">0. AI Gateway Quick Start</a>
-            <a href="#section-1" class="nav-link">1. Konnect UI: Core Setup</a>
-            <a href="#section-2" class="nav-link">2. Apply Key Auth Policy</a>
-            <a href="#section-3" class="nav-link">3. AI Rate Limiting Policy</a>
-            <a href="#section-4" class="nav-link">4. Semantic Prompt Guard Policy</a>
-            <a href="#section-5" class="nav-link">5. Semantic Caching Policy</a>
-            <a href="#section-6" class="nav-link">6. Semantic Routing Policy</a>
-            <a href="#section-7" class="nav-link">7. Prompt Decorator Policy</a>
-            <a href="#section-8" class="nav-link">8. Prompt Template Policy</a>
-            <a href="#section-9" class="nav-link">9. MCP Server Setup</a>
-            <a href="#section-10" class="nav-link">10. A2A Connectivity</a>
-        </nav>
-    </aside>
+  <aside class="sidebar">
+    <img src="primary-logo-dark-green-electric-lime-BG@2x.png" alt="Kong Logo">
+    <nav>
+      <a href="#quickstart" class="nav-link active">0. AI Gateway Quick Start</a>
+      <a href="#key-auth" class="nav-link">1. Setup Key Authentication</a>
+      <a href="#rate-limiting" class="nav-link">2. AI Rate Limiting</a>
+      <a href="#semantic-prompt-guard" class="nav-link">3. Semantic Prompt Guard</a>
+      <a href="#semantic-caching" class="nav-link">4. Semantic Caching</a>
+      <a href="#semantic-routing" class="nav-link">5. Semantic Routing</a>
+      <a href="#prompt-decorator" class="nav-link">6. Prompt Decorator & Template</a>
+      <a href="#mcp" class="nav-link">7. MCP Server Setup</a>
+      <a href="#a2a" class="nav-link">8. A2A Connectivity</a>
+    </nav>
+  </aside>
 
-    <main>
-        <div class="mb-12 text-center">
-            <h1 class="text-4xl font-extrabold text-[#002117] mb-8 border-none p-0 inline-block">Kong AI Gateway 2.0 Workshop</h1>
-            <br>
-            <img src="ai-gateway-overview (2).svg" alt="AI Gateway Overview Diagram" class="max-w-full h-auto rounded-xl shadow-lg border border-gray-200 mt-4 mx-auto">
-        </div>
+  <main class="content">
+    <h1>Kong AI Gateway 2.0 Workshop</h1>
+    <p>Welcome to the comprehensive workshop for setting up, managing, and securing your LLM traffic using Kong AI Gateway 2.0. Follow the steps below to configure your unified control plane, enforce governance policies on your AI Models, and extend capabilities with MCP and A2A.</p>
+    
+    <img src="ai-gateway-overview (2).svg" alt="Kong AI Gateway Overview Diagram" class="overview-img">
 
-        <section id="section-0" class="content-section">
-            <h1>0. AI Gateway Quick Start</h1>
-            <p>Welcome to the AI Gateway 2.0 Workshop. The fastest way to get started is by deploying a local data plane node via the setup script and configuring it using <code>kongctl</code>.</p>
+    <section id="quickstart">
+      <h2>0. AI Gateway Quick Start</h2>
+      <p>AI Gateway provides first-class entities for managing LLM providers and models in Kong Konnect. Create an AI Model Provider entity to connect and authenticate to an LLM service like OpenAI, then create an AI Model entity to specify which model is available for requests.</p>
+      
+      <h3>Prerequisites & Setup</h3>
+      <p>Create a new personal access token by opening the Konnect PAT page and selecting Generate Token. Export your token to an environment variable:</p>
+<pre><code>export KONNECT_TOKEN='YOUR_KONNECT_PAT'</code></pre>
 
-            <h2>Prerequisites & Setup</h2>
-            <ol>
-                <li>Export your Konnect Personal Access Token (PAT):
-<pre><code>export KONNECT_TOKEN="&lt;your-pat&gt;"</code></pre>
-                </li>
-                <li>Run the automated installation script to spin up the data plane node and configure <code>kongctl</code>:
+      <p>Run the AI Gateway quickstart script to automatically provision a control plane and data plane in Kong Konnect, and configure your environment:</p>
 <pre><code>curl -Ls https://get.konghq.com/ai | bash -s -- -k $KONNECT_TOKEN</code></pre>
-                </li>
-                <li>Export the necessary environment variables provided by the script output:
-<pre><code>export AI_GATEWAY_ID="&lt;your-gateway-id&gt;"
-export KONNECT_PROXY_URL="&lt;your-proxy-url&gt;"
-export OPENAI_API_KEY="&lt;your-openai-key&gt;"</code></pre>
-                </li>
-            </ol>
 
-            <h2>Create AI Entities</h2>
-            <p>In AI Gateway 2.0, infrastructure is decoupled. You first create an AI Model Provider, and then link an AI Model to it.</p>
-            
-            <p><strong>1. Create AI Model Provider:</strong></p>
-<pre><code>kongctl apply -g $AI_GATEWAY_ID -f - &lt;&lt;EOF
-type: AIModelProvider
-name: generic-openai
-provider_type: openai
-auth_credentials:
-  type: API_KEY
-  api_key: \${OPENAI_API_KEY}
+      <p>This sets up an AI Gateway control plane named <code>ai-quickstart</code>, provisions a local data plane, and prints out the following environment variables export:</p>
+<pre><code>export AI_GATEWAY_ID=your-gateway-id
+export KONNECT_TOKEN=$KONNECT_TOKEN
+export KONNECT_CONTROL_PLANE_NAME=ai-quickstart
+export KONNECT_CONTROL_PLANE_URL=https://us.api.konghq.com
+export KONNECT_PROXY_URL='http://localhost:8000'</code></pre>
+
+      <p>Export your OpenAI API key as an environment variable:</p>
+<pre><code>export OPENAI_API_KEY='YOUR_OPENAI_API_KEY'
+export OPENAI_AUTH_HEADER="Bearer $OPENAI_API_KEY"</code></pre>
+
+      <h3>Create an AI Model Provider entity</h3>
+      <p>Apply the configuration using <code>kongctl</code>:</p>
+<pre><code>kongctl apply -f - --auto-approve --pat "$KONNECT_TOKEN" &lt;&lt; 'EOF'
+ai_gateway_model_providers:
+  - ref: generic-openai
+    ai_gateway: !lookup {id: !env AI_GATEWAY_ID}
+    name: generic-openai
+    display_name: "generic-openai"
+    type: openai
+    config:
+      auth:
+        type: basic
+        headers:
+          - name: Authorization
+            value: !secret {source: !env OPENAI_AUTH_HEADER}
 EOF</code></pre>
 
-            <p><strong>2. Create AI Model:</strong></p>
-<pre><code>kongctl apply -g $AI_GATEWAY_ID -f - &lt;&lt;EOF
-type: AIModel
-name: my-gpt-4o
-provider_name: generic-openai
-model_name: gpt-4o
+      <h3>Create an AI Model entity</h3>
+      <p>Declare which upstream models are available, configure how client requests are routed, and specify which AI Model Provider to use:</p>
+<pre><code>kongctl apply -f - --auto-approve --pat "$KONNECT_TOKEN" &lt;&lt; 'EOF'
+ai_gateway_models:
+  - ref: my-gpt-4o
+    ai_gateway: !lookup {id: !env AI_GATEWAY_ID}
+    name: my-gpt-4o
+    display_name: "my-gpt-4o"
+    type: model
+    formats:
+      - type: openai
+    config:
+      route:
+        paths:
+          - /v1
+        model:
+          body_param: model
+          values:
+            - my-gpt-4o
+      targets:
+        - name: gpt-4o
+          provider: generic-openai
+          config:
+            type: openai
+      policies: []
+      capabilities:
+        - generate
+EOF</code></pre>
+    </section>
+
+    <section id="key-auth">
+      <h2>1. Setup Key Authentication Policy</h2>
+      <p>Before proceeding with AI Governance, secure your AI Model with API Keys. Remember, in Kong AI Gateway 2.0, policies are attached directly to the <strong>AI Model</strong> entity, not to generic routes.</p>
+      <ol>
+        <li>Navigate to your <strong>my-gpt-4o</strong> AI Model in the Konnect UI.</li>
+        <li>Open the <strong>Policies</strong> tab and click <strong>Add Policy</strong>.</li>
+        <li>Search for <strong>Key Authentication</strong> and enable it. Leave the default settings (Header name: <code>apikey</code>).</li>
+        <li>Go to <strong>Consumers</strong>, create a new consumer named <code>ai-developer</code>.</li>
+        <li>Under the consumer's credentials tab, generate a new <strong>API Key</strong> (e.g., <code>my-secret-key</code>).</li>
+      </ol>
+<pre><code>curl -X POST "$KONNECT_PROXY_URL/v1/chat/completions" \
+  -H "apikey: my-secret-key" \
+  -H "Content-Type: application/json" \
+  --json '{
+    "messages": [{"role": "user", "content": "Hello Kong!"}],
+    "model": "my-gpt-4o"
+  }'</code></pre>
+    </section>
+
+    <section id="rate-limiting">
+      <h2>2. AI Rate Limiting Advanced Policy</h2>
+      <p>The AI Rate Limiting Advanced policy restricts traffic based on the total number of LLM <strong>tokens</strong> processed, allowing you to control true financial costs rather than just HTTP requests.</p>
+      <ol>
+        <li>Navigate to your AI Model (<code>my-gpt-4o</code>) and open the <strong>Policies</strong> tab.</li>
+        <li>Add the <strong>AI Rate Limiting Advanced</strong> policy.</li>
+        <li>Set the Strategy to <code>local</code> (for testing) or <code>redis</code> (for production).</li>
+        <li>Under limits, specify a token limit by entering JSON: <code>[ { "limit": 2000, "window_size": 60 } ]</code>.</li>
+        <li>Ensure the limit type is explicitly set to <strong>Tokens</strong>.</li>
+      </ol>
+    </section>
+
+    <section id="semantic-prompt-guard">
+      <h2>3. Semantic Prompt Guard Policy</h2>
+      <p>Stop relying on rigid regex keywords to block malicious intent. The Semantic Prompt Guard policy uses vector embeddings to block requests based on the <em>meaning</em> of the prompt.</p>
+      <ol>
+        <li>In the Konnect UI, ensure you have an <strong>Embeddings Provider</strong> configured (e.g., using OpenAI's `text-embedding-3-small`).</li>
+        <li>Navigate to the <strong>Policies</strong> tab of your AI Model and add the <strong>AI Semantic Prompt Guard</strong> policy.</li>
+        <li>Configure the <strong>Deny Topics</strong> array with natural language intents. Example entries: 
+          <ul>
+            <li><code>"Provide financial or investment advice"</code></li>
+            <li><code>"Generate malicious code or exploits"</code></li>
+          </ul>
+        </li>
+      </ol>
+    </section>
+
+    <section id="semantic-caching">
+      <h2>4. Semantic Caching Policy</h2>
+      <p>Serve responses instantly for functionally identical prompts by evaluating vector embeddings. If a user asks "What is Kong?" and later asks "Explain Kong to me", the gateway serves the cached response.</p>
+      <ol>
+        <li>Navigate to the <strong>Policies</strong> tab of your AI Model and add the <strong>AI Semantic Caching</strong> policy.</li>
+        <li>Select your configured Embeddings Provider within the policy settings.</li>
+        <li>Set the <strong>Distance Threshold</strong> to <code>0.15</code>.</li>
+        <li>Configure a Redis connection for the backend datastore where embeddings and LLM responses will be cached.</li>
+      </ol>
+    </section>
+
+    <section id="semantic-routing">
+      <h2>5. Semantic Routing Policy</h2>
+      <p>Intelligently route traffic between different LLMs based on the context of the user's prompt to optimize for cost or performance.</p>
+      <ol>
+        <li>Ensure you have both an <strong>OpenAI AI Provider</strong> and a <strong>Mistral AI Provider</strong> configured in Konnect.</li>
+        <li>On an overarching AI Model acting as your router, attach the <strong>AI Semantic Routing</strong> policy.</li>
+        <li>Configure routing rules mapping semantic intent to specific underlying providers:
+          <ul>
+            <li>Route <code>"Conversational chat or creative writing"</code> to your <code>generic-openai</code> provider.</li>
+            <li>Route <code>"Data extraction and strict JSON parsing"</code> to your <code>mistral-provider</code>.</li>
+          </ul>
+        </li>
+      </ol>
+    </section>
+
+    <section id="prompt-decorator">
+      <h2>6. Prompt Decorator & Template Policies</h2>
+      <p>Ensure users are supplying appropriately formatted context without giving them direct control over your system instructions.</p>
+      
+      <h3>AI Prompt Decorator</h3>
+      <ol>
+        <li>Add the <strong>AI Prompt Decorator</strong> policy to your AI Model.</li>
+        <li>Set the role to <code>system</code>.</li>
+        <li>Add text to inject invisibly, e.g., <code>"You are a helpful assistant for Kong API Gateway. Format output in Markdown."</code></li>
+        <li>Choose <code>prepend</code> to array to inject this before the user's message.</li>
+      </ol>
+
+      <h3>AI Prompt Template</h3>
+      <ol>
+        <li>Add the <strong>AI Prompt Template</strong> policy to your AI Model.</li>
+        <li>Create a template named <code>support-query</code>.</li>
+        <li>Template body using Mustache syntax: <code>"Answer the following user question: {{question}}. Context: {{context}}"</code>.</li>
+        <li>Set <strong>Allow Untemplated Requests</strong> to <code>false</code> to block raw payloads and enforce the structured contract.</li>
+      </ol>
+    </section>
+
+    <section id="mcp">
+      <h2>7. MCP Server Setup</h2>
+      <p>Map an API to a Model Context Protocol (MCP) Tool to proxy MCP server traffic securely through the AI Gateway.</p>
+      <div class="note-box">
+        <strong>Note:</strong> You must first define an <strong>MCP Server</strong> entity in Kong Konnect to expose your internal APIs as secure, observable tools that LLMs and AI Agents can consume dynamically.
+      </div>
+      <ol>
+        <li>Navigate to the <strong>MCP Servers</strong> tab in your Konnect AI Gateway dashboard.</li>
+        <li>Click <strong>New MCP Server</strong>. Give it a name (e.g., <code>weather-mcp</code>).</li>
+        <li>Define the upstream URL of your MCP-compliant service.</li>
+        <li>Map specific OpenAPI specification endpoints to MCP Tools so the AI Model understands the schema and capabilities.</li>
+        <li>Apply standard Policies (like Rate Limiting or Key Auth) directly to the MCP Server entity just as you would an AI Model.</li>
+      </ol>
+    </section>
+
+    <section id="a2a">
+      <h2>8. A2A Connectivity</h2>
+      <p>Route Agent-to-Agent (A2A) traffic through AI Gateway with protocol-aware metrics, tracing, and agent card rewriting. The A2A protocol defines how AI agents communicate with each other over HTTP using standard JSON-RPC payloads.</p>
+      
+      <h3>Prerequisites</h3>
+      <p>You need a running A2A-compliant agent. This guide uses a sample KongAir travel agent that uses OpenAI and LangGraph to answer flight route queries. Create a <code>docker-compose.yaml</code> file:</p>
+<pre><code>cat &lt;&lt;'EOF' > docker-compose.yaml
+services:
+  a2a-agent:
+    container_name: a2a-kongair-agent
+    image: ghcr.io/tomek-labuk/a2a-kongair-openai-agent:1.0.0
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OPENAI_MODEL=gpt-4o-mini
+      - KONGAIR_BASE_URL=https://api.kong-air.com
+      - PUBLIC_AGENT_URL=http://localhost:10000
+    ports:
+      - "10000:10000"
 EOF</code></pre>
 
-            <h2>Validation</h2>
-            <p>Verify that your proxy routes traffic to the specific AI Model entity.</p>
-<pre><code>curl -X POST \${KONNECT_PROXY_URL}/v1/chat/completions \
-  -H "Content-Type: application/json" \
-  -d '{
-    "messages": [
-      {
-        "role": "user",
-        "content": "What is Kong API Gateway?"
-      }
-    ]
-  }'</code></pre>
-        </section>
+      <p>Start the agent:</p>
+<pre><code>docker compose up -d --wait</code></pre>
+      <p>The agent listens on port <code>10000</code> and uses the A2A JSON-RPC protocol to handle flight route queries.</p>
 
-        <section id="section-1" class="content-section">
-            <h1>1. Konnect UI: Core Setup</h1>
-            <p>Alternatively, you can manage your AI infrastructure visually via the Konnect dashboard.</p>
+      <h3>Create an AI Agent Entity</h3>
+      <p>AI Gateway acts as a control and observability layer for A2A traffic, enabling you to route agent-to-agent requests, extract task metadata, and rewrite agent card URLs.</p>
+      <ol>
+        <li>In Konnect UI, navigate to <strong>AI Agents</strong>.</li>
+        <li>Click <strong>New AI Agent</strong>.</li>
+        <li>Define the upstream Target URL pointing to your agent container (e.g., <code>http://host.docker.internal:10000</code>).</li>
+        <li>Attach an <strong>OpenTelemetry</strong> policy to your AI Agent entity to export A2A traces (task IDs, JSON-RPC method calls, payloads) and metrics to your observability backend.</li>
+      </ol>
+    </section>
 
-            <ol>
-                <li>Log in to your <strong>Kong Konnect account</strong> at <code>cloud.konghq.com</code>.</li>
-                <li>From the left navigation menu, click <strong>AI Gateway</strong> and select <strong>New AI Gateway</strong> to initialize your control plane. Name it appropriately.</li>
-                <li>Navigate to <strong>AI Model Providers</strong>. Click <strong>New Provider</strong>. 
-                    <ul>
-                        <li>Set name to <code>generic-openai</code>.</li>
-                        <li>Select <strong>OpenAI</strong> as the provider.</li>
-                        <li>Input your OpenAI API key securely and click <strong>Save</strong>.</li>
-                    </ul>
-                </li>
-                <li>Navigate to <strong>AI Models</strong>. Click <strong>New Model</strong>.
-                    <ul>
-                        <li>Set name to <code>my-gpt-4o</code>.</li>
-                        <li>Link it to the <code>generic-openai</code> provider.</li>
-                        <li>Set upstream model to <code>gpt-4o</code> and click <strong>Save</strong>.</li>
-                    </ul>
-                </li>
-            </ol>
-            <div class="note-box">
-                <strong>Crucial Note on Policies:</strong> In Kong AI Gateway 2.0, governance capabilities (formerly plugins) are called <strong>Policies</strong>, and they are strictly attached to the <strong>AI Model</strong> entity, not to a route.
-            </div>
-        </section>
+  </main>
 
-        <section id="section-2" class="content-section">
-            <h1>2. Apply Key Auth Policy</h1>
-            <p>To secure your AI Models from unauthorized access, attach the Key Authentication policy directly to your AI Model.</p>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const sections = document.querySelectorAll('section');
+      const navLinks = document.querySelectorAll('.nav-link');
 
-            <h2>Configuration Steps</h2>
-            <ol>
-                <li>In Konnect, navigate to <strong>AI Models</strong> and select <code>my-gpt-4o</code>.</li>
-                <li>Click the <strong>Policies</strong> tab for this model.</li>
-                <li>Click <strong>Add Policy</strong>, search for <strong>Key Authentication</strong>, and enable it.</li>
-                <li>Leave the default setting (Header name: <code>apikey</code>) and click <strong>Save</strong>.</li>
-                <li>Create a <strong>Consumer</strong> named <code>ai-developer</code> in Konnect, navigate to its <strong>Credentials</strong>, and generate a new API Key.</li>
-            </ol>
+      // Intersection Observer for highlighting sidebar links on scroll
+      const observerOptions = {
+        root: null,
+        rootMargin: '-20% 0px -75% 0px',
+        threshold: 0
+      };
 
-            <h2>Validation</h2>
-<pre><code>curl -X POST \${KONNECT_PROXY_URL}/v1/chat/completions \
-  -H "Content-Type: application/json" \
-  -H "apikey: &lt;YOUR_API_KEY&gt;" \
-  -d '{
-    "messages": [{"role": "user", "content": "Hello!"}]
-  }'</code></pre>
-        </section>
-
-        <section id="section-3" class="content-section">
-            <h1>3. AI Rate Limiting Policy</h1>
-            <p>Control costs by limiting LLM usage based on actual token consumption instead of HTTP requests.</p>
-
-            <h2>Configuration Steps</h2>
-            <ol>
-                <li>Select your AI Model (<code>my-gpt-4o</code>) and navigate to its <strong>Policies</strong> tab.</li>
-                <li>Add the <strong>AI Rate Limiting Advanced</strong> policy.</li>
-                <li>Set the <strong>Limit Type</strong> to <code>Tokens</code>.</li>
-                <li>Configure the <strong>Limit</strong> to <code>5000</code> and the <strong>Window Size</strong> to <code>60</code> seconds.</li>
-                <li>Click <strong>Save</strong>.</li>
-            </ol>
-
-            <h2>Validation</h2>
-            <p>When exceeding 5000 tokens within 60 seconds, the AI Gateway intercepts the request and responds with a 429 error before it reaches OpenAI.</p>
-<pre><code><span class="code-comment"># Request exceeding the token limit</span>
-curl -v -X POST \${KONNECT_PROXY_URL}/v1/chat/completions \
-  -H "Content-Type: application/json" \
-  -H "apikey: &lt;YOUR_API_KEY&gt;" \
-  -d '{
-    "messages": [{"role": "user", "content": "Write a 10,000 word essay."}]
-  }'</code></pre>
-        </section>
-
-        <section id="section-4" class="content-section">
-            <h1>4. Semantic Prompt Guard Policy</h1>
-            <p>Protect your models using natural language intent detection instead of rigid regex rules. This requires attaching the policy to the AI Model and configuring an Embeddings provider.</p>
-
-            <h2>Configuration Steps</h2>
-            <ol>
-                <li>On the <strong>Policies</strong> tab of your AI Model, add the <strong>AI Semantic Prompt Guard</strong> policy.</li>
-                <li>Configure the <strong>Embeddings</strong> settings to point to your provider (e.g., <code>text-embedding-3-small</code>).</li>
-                <li>Under <strong>Deny Topics</strong>, define descriptions in natural language. For example:
-                    <ul>
-                        <li><code>"Financial or investment advice"</code></li>
-                        <li><code>"Hate speech or offensive language"</code></li>
-                    </ul>
-                </li>
-                <li>Click <strong>Save</strong>. If a prompt's intent mathematically matches these topics, the AI Gateway blocks it.</li>
-            </ol>
-        </section>
-
-        <section id="section-5" class="content-section">
-            <h1>5. Semantic Caching Policy</h1>
-            <p>Reduce latency and LLM costs by serving cached responses when user prompts mean the same thing, even if phrased differently.</p>
-
-            <h2>Configuration Steps</h2>
-            <ol>
-                <li>On the <strong>Policies</strong> tab of your AI Model, add the <strong>AI Semantic Caching</strong> policy.</li>
-                <li>Configure the embeddings model details as you did for Prompt Guard.</li>
-                <li>Set the <strong>Distance Threshold</strong> to <code>0.15</code>.</li>
-                <li>Select a cache backend (e.g., in-memory or Redis) and click <strong>Save</strong>.</li>
-            </ol>
-            <p>If a new prompt's vector is within a 0.15 distance from a previously cached prompt, the policy instantly serves the cached LLM response.</p>
-        </section>
-
-        <section id="section-6" class="content-section">
-            <h1>6. Semantic Routing Policy</h1>
-            <p>Dynamically route requests to different underlying models based on the semantic intent of the user's prompt. You attach this policy to an overarching generic AI Model that acts as a router.</p>
-
-            <h2>Configuration Steps</h2>
-            <ol>
-                <li>Create three AI Models: a generic entry model (e.g., <code>ai-router</code>), an OpenAI model (<code>gpt-4o</code>), and a Mistral model (<code>mistral-large</code>).</li>
-                <li>Attach the <strong>AI Semantic Routing</strong> policy to the <code>ai-router</code> AI Model.</li>
-                <li>Configure the Embeddings block in the policy.</li>
-                <li>Define the Routing Rules:
-                    <ul>
-                        <li><strong>Rule 1 Intent:</strong> <code>"Write software code or scripts"</code> → Route to AI Model: <code>gpt-4o</code>.</li>
-                        <li><strong>Rule 2 Intent:</strong> <code>"General conversation and answering questions"</code> → Route to AI Model: <code>mistral-large</code>.</li>
-                    </ul>
-                </li>
-                <li>Save the policy.</li>
-            </ol>
-
-            <h2>Validation</h2>
-<pre><code><span class="code-comment"># This request will be routed to GPT-4o</span>
-curl -X POST \${KONNECT_PROXY_URL}/v1/chat/completions \
-  -H "Content-Type: application/json" \
-  -H "apikey: &lt;YOUR_API_KEY&gt;" \
-  -d '{
-    "messages": [{"role": "user", "content": "Write a Python script to sort an array."}]
-  }'</code></pre>
-        </section>
-
-        <section id="section-7" class="content-section">
-            <h1>7. Prompt Decorator Policy</h1>
-            <p>Inject system instructions invisibly at the gateway layer. Attach this policy to your AI Model to standardize behavior.</p>
-            <ol>
-                <li>Add the <strong>AI Prompt Decorator</strong> policy to your AI Model.</li>
-                <li>Set <strong>Role</strong> to <code>system</code>.</li>
-                <li>Set <strong>Content</strong> to: <code>You are a highly concise AI. Always answer in one sentence.</code></li>
-                <li>Choose <strong>Prepend</strong> to inject this before user messages, then <strong>Save</strong>.</li>
-            </ol>
-        </section>
-
-        <section id="section-8" class="content-section">
-            <h1>8. Prompt Template Policy</h1>
-            <p>Enforce strict API contracts. Instead of accepting unstructured text, require structured JSON variables from the client.</p>
-            <ol>
-                <li>Add the <strong>AI Prompt Template</strong> policy to your AI Model.</li>
-                <li>Create a template named <code>translator</code> using Mustache syntax:
-                    <br><code>[{"role": "user", "content": "Translate to {{language}}: {{text}}"}]</code>
-                </li>
-                <li>Set <strong>Allow Untemplated Requests</strong> to <code>false</code> to force structured input.</li>
-            </ol>
-        </section>
-
-        <section id="section-9" class="content-section">
-            <h1>9. MCP Server Setup</h1>
-            <p>The Model Context Protocol (MCP) standardizes how AI models access external data and tools. Kong AI Gateway acts as an MCP Server, translating natural language tool calls directly into HTTP requests to your backend APIs.</p>
-
-            <h2>Configuration Steps</h2>
-            <ol>
-                <li>Ensure you have a standard Kong Service pointing to a backend API (e.g., a Weather API).</li>
-                <li>In Konnect, create a new <strong>MCP Server</strong> entity.</li>
-                <li>Within the MCP Server configuration, define a <strong>Tool Mapping</strong> to connect the AI's natural language understanding to your API route.</li>
-                <li>Example Tool Mapping (YAML representation):
-<pre><code>tools:
-  - name: get_current_weather
-    description: "Get current weather for a location"
-    route_name: weather-api-route
-    schema:
-      type: object
-      properties:
-        location:
-          type: string
-          description: "City and state, e.g. San Francisco, CA"
-      required: ["location"]
-</code></pre>
-                </li>
-                <li>Attach the MCP Server to your <strong>AI Model</strong>.</li>
-            </ol>
-
-            <h2>Validation</h2>
-            <p>Send a prompt asking for the weather. Include the tool description in your request. The AI Gateway intercepts the tool call, executes the HTTP request, and feeds the context back to the model.</p>
-<pre><code>curl -X POST \${KONNECT_PROXY_URL}/v1/chat/completions \
-  -H "Content-Type: application/json" \
-  -H "apikey: &lt;YOUR_API_KEY&gt;" \
-  -d '{
-    "messages": [
-      {
-        "role": "user",
-        "content": "What is the weather like in New York today?"
-      }
-    ],
-    "tools": [
-       {"type": "function", "function": {"name": "get_current_weather"}}
-    ]
-  }'</code></pre>
-        </section>
-
-        <section id="section-10" class="content-section">
-            <h1>10. Agent-to-Agent (A2A) Connectivity</h1>
-            <p>For autonomous operations, AI Gateway 2.0 manages traffic between AI Agents using standard JSON-RPC payloads, providing routing, rewriting, authentication, and OpenTelemetry tracing.</p>
-
-            <h2>Configuration Steps</h2>
-            <ol>
-                <li>Create an <strong>AI Agent</strong> entity in Konnect. Give it a name (e.g., <code>support-agent</code>).</li>
-                <li>Configure the Agent's routing to point to an underlying <strong>AI Model</strong>.</li>
-                <li><strong>Rewrite Agent Card URLs:</strong> If your agents exchange metadata (Cards), configure Kong to rewrite internal URLs to external gateway endpoints so agents can locate each other securely.</li>
-                <li><strong>Observability:</strong> Attach the <strong>OpenTelemetry</strong> policy to the AI Agent entity to trace JSON-RPC calls between agents in Datadog or Honeycomb.</li>
-                <li><strong>Security:</strong> Secure agent endpoints using the <strong>AI Auth Strategy</strong> (e.g., OpenID Connect) to ensure only authorized agents can communicate.</li>
-            </ol>
-
-            <h2>Testing with a Dummy Agent</h2>
-            <p>You can run a local test agent using Docker to simulate JSON-RPC traffic.</p>
-<pre><code><span class="code-comment"># Run a dummy AI Agent</span>
-docker run -d --name dummy-agent \
-  -e AGENT_NAME=support-agent \
-  kong/ai-dummy-agent:latest</code></pre>
-
-            <p>Proxy JSON-RPC traffic through the Gateway to the agent:</p>
-<pre><code>curl -X POST \${KONNECT_PROXY_URL}/rpc \
-  -H "Content-Type: application/json" \
-  -H "apikey: &lt;YOUR_API_KEY&gt;" \
-  -d '{
-    "jsonrpc": "2.0",
-    "method": "agent.communicate",
-    "params": {
-      "agent_id": "support-agent",
-      "message": "Escalating ticket #1234."
-    },
-    "id": 1
-  }'</code></pre>
-        </section>
-
-    </main>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const sections = document.querySelectorAll('.content-section');
-            const navLinks = document.querySelectorAll('.nav-link');
-
-            const observerOptions = {
-                root: null,
-                rootMargin: '-100px 0px -60% 0px',
-                threshold: 0
-            };
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        navLinks.forEach(link => link.classList.remove('active'));
-                        const id = entry.target.getAttribute('id');
-                        const activeLink = document.querySelector(`.nav-link[href="#${id}"]`);
-                        if (activeLink) {
-                            activeLink.classList.add('active');
-                        }
-                    }
-                });
-            }, observerOptions);
-
-            sections.forEach(section => {
-                observer.observe(section);
-            });
-            
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const id = entry.target.getAttribute('id');
             navLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    const targetId = this.getAttribute('href');
-                    if (targetId.startsWith('#')) {
-                        e.preventDefault();
-                        const targetSection = document.querySelector(targetId);
-                        if (targetSection) {
-                            window.scrollTo({
-                                top: targetSection.offsetTop - 40,
-                                behavior: 'smooth'
-                            });
-                        }
-                        
-                        navLinks.forEach(l => l.classList.remove('active'));
-                        this.classList.add('active');
-                    }
-                });
+              link.classList.remove('active');
+              if (link.getAttribute('href') === `#${id}`) {
+                link.classList.add('active');
+              }
             });
+          }
         });
-    </script>
+      }, observerOptions);
+
+      sections.forEach(section => observer.observe(section));
+
+      // Click event for smooth scrolling
+      navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          const targetId = this.getAttribute('href');
+          const targetSection = document.querySelector(targetId);
+          
+          if (targetSection) {
+            window.scrollTo({
+              top: targetSection.offsetTop - 30, // Offset for breathing room
+              behavior: 'smooth'
+            });
+          }
+        });
+      });
+    });
+  </script>
 </body>
 </html>
