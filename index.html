@@ -153,7 +153,7 @@
                         </li>
                         <li>
                             <p class="mb-2"><strong>Export resulting vars:</strong></p>
-<pre><code>export AI_GATEWAY_ID=your-gateway-id
+<pre><code>export AI_GATEWAY_ID=<your-gateway-id></your-gateway-id>
 export KONNECT_TOKEN=$KONNECT_TOKEN
 export KONNECT_CONTROL_PLANE_NAME=ai-quickstart
 export KONNECT_CONTROL_PLANE_URL=https://us.api.konghq.com
@@ -202,7 +202,7 @@ EOF</code></pre>
                     <ul class="list-disc list-outside ml-6 space-y-6 text-gray-700 text-lg">
                         <li>
                             <p class="mb-2">Declare upstream models and routing:</p>
-<pre><code>kongctl apply -f - --auto-approve --pat "$KONNECT_TOKEN" &lt;&lt; 'EOF'
+<pre><code>kongctl apply -f - --auto-approve --pat "$KONNECT_TOKEN" << 'EOF'
 ai_gateway_models:
   - ref: my-gpt-4o
     ai_gateway: !lookup {id: !env AI_GATEWAY_ID}
@@ -219,14 +219,14 @@ ai_gateway_models:
           body_param: model
           values:
             - my-gpt-4o
-      targets:
-        - name: gpt-4o
-          provider: generic-openai
-          config:
-            type: openai
-      policies: []
-      capabilities:
-        - generate
+    targets:
+      - name: gpt-4o
+        provider: generic-openai
+        config:
+          type: openai
+    policies: []
+    capabilities:
+      - generate
 EOF</code></pre>
                         </li>
                     </ul>
