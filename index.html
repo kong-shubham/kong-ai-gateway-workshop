@@ -111,10 +111,7 @@
 
     <aside class="w-72 bg-kong-sidebar border-r border-gray-200 flex flex-col flex-shrink-0 h-full shadow-sm z-10 hidden md:flex">
         <div class="p-6 border-b border-gray-100 flex flex-col items-start">
-            <!-- Logo container with dark background for contrast if needed, but per prompt using clean white -->
-            <div class="bg-kong-dark w-full p-3 rounded-lg flex items-center justify-center mb-4">
-                <img src="primary-logo-dark-green-electric-lime-BG@2x.png" alt="Kong Logo" class="h-8 object-contain">
-            </div>
+            <img src="primary-logo-dark-green-electric-lime-BG@2x.png" alt="Kong Logo" style="max-width: 150px;" class="mb-4 rounded shadow-sm">
             <h1 class="text-xl font-bold">AI Gateway 2.0</h1>
             <p class="text-sm text-gray-500 mt-1">Interactive Workshop</p>
         </div>
@@ -138,9 +135,11 @@
         <div class="max-w-4xl mx-auto p-6 md:p-12 pb-24">
             
             <section id="start-ai-gateway">
-                <h1 class="text-3xl md:text-4xl font-bold mb-10 pb-4 border-b border-gray-200">Start with AI Gateway 2.0</h1>
+                <h1 class="text-3xl md:text-4xl font-bold mb-6 pb-4 border-b border-gray-200">Start with AI Gateway 2.0</h1>
 
-                <div class="mb-12">
+                <img src="ai-gateway-overview (2).svg" alt="AI Gateway Overview" style="max-width: 100%; border-radius: 8px; margin: 20px 0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
+
+                <div class="mb-12 mt-10">
                     <h2 class="text-2xl font-bold mb-4 text-kong-dark">Section 1: Prerequisites</h2>
                     <ul class="list-disc list-outside ml-6 space-y-6 text-gray-700 text-lg">
                         <li>
@@ -153,7 +152,7 @@
                         </li>
                         <li>
                             <p class="mb-2"><strong>Export resulting vars:</strong></p>
-<pre><code>export AI_GATEWAY_ID=<your-gateway-id></your-gateway-id>
+<pre><code>export AI_GATEWAY_ID=your-gateway-id
 export KONNECT_TOKEN=$KONNECT_TOKEN
 export KONNECT_CONTROL_PLANE_NAME=ai-quickstart
 export KONNECT_CONTROL_PLANE_URL=https://us.api.konghq.com
@@ -228,9 +227,7 @@ ai_gateway_models:
     policies: []
     capabilities:
       - generate
-EOF
-    
-</code></pre>
+EOF</code></pre>
                         </li>
                     </ul>
                 </div>
