@@ -14,7 +14,7 @@
       --kong-dark-green: #002117;
       --kong-electric-lime: #C6F91C;
       --code-bg: #00120d;
-      --text-main: #e2e8f0; /* Light grey for readable body text on dark bg */
+      --text-main: #e2e8f0;
       --border-color: #004d35;
       --panel-bg: rgba(255, 255, 255, 0.03);
     }
@@ -143,6 +143,7 @@
       border: 1px solid var(--border-color);
       font-size: 0.95rem;
       box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+      margin: 1.5rem 0;
     }
 
     code {
@@ -236,8 +237,8 @@ export KONNECT_PROXY_URL='http://localhost:8000'</code></pre>
 <pre><code>export OPENAI_API_KEY='YOUR_OPENAI_API_KEY'
 export OPENAI_AUTH_HEADER="Bearer $OPENAI_API_KEY"</code></pre>
 
-      <h3>Create an AI Model Provider entity</h3>
-      <p>Apply the configuration using <code>kongctl</code>:</p>
+      <h3>Create Entities</h3>
+      <p>Create your AI Model Provider and AI Model using `kongctl`:</p>
 <pre><code>kongctl apply -f - --auto-approve --pat "$KONNECT_TOKEN" &lt;&lt; 'EOF'
 ai_gateway_model_providers:
   - ref: generic-openai
@@ -251,11 +252,7 @@ ai_gateway_model_providers:
         headers:
           - name: Authorization
             value: !secret {source: !env OPENAI_AUTH_HEADER}
-EOF</code></pre>
 
-      <h3>Create an AI Model entity</h3>
-      <p>Declare which upstream models are available, configure how client requests are routed, and specify which AI Model Provider to use:</p>
-<pre><code>kongctl apply -f - --auto-approve --pat "$KONNECT_TOKEN" &lt;&lt; 'EOF'
 ai_gateway_models:
   - ref: my-gpt-4o
     ai_gateway: !lookup {id: !env AI_GATEWAY_ID}
@@ -281,11 +278,25 @@ ai_gateway_models:
       capabilities:
         - generate
 EOF</code></pre>
+
+      <h3>Testing Script</h3>
+      <p>Verify your AI Gateway setup by sending a standard OpenAI payload to your local proxy:</p>
+<pre><code>curl -X POST "$KONNECT_PROXY_URL/v1/chat/completions" \
+  -H "Content-Type: application/json" \
+  --json '{
+    "messages": [
+      {
+        "role": "user",
+        "content": "Hello Kong!"
+      }
+    ],
+    "model": "my-gpt-4o"
+  }'</code></pre>
     </section>
 
     <section id="key-auth">
       <h2>1. Setup Key Authentication Policy</h2>
-      <p>Before proceeding with AI Governance, secure your AI Model with API Keys. Remember, in Kong AI Gateway 2.0, policies are attached directly to the <strong>AI Model</strong> entity, not to generic routes.</p>
+      <p>Before proceeding with AI Governance, secure your AI Model with API Keys. Remember, in Kong AI Gateway 2.0, policies are attached directly to the <strong>AI Model</strong> entity.</p>
       <ol>
         <li>Navigate to your <strong>my-gpt-4o</strong> AI Model in the Konnect UI.</li>
         <li>Open the <strong>Policies</strong> tab and click <strong>Add Policy</strong>.</li>
@@ -293,11 +304,14 @@ EOF</code></pre>
         <li>Go to <strong>Consumers</strong>, create a new consumer named <code>ai-developer</code>.</li>
         <li>Under the consumer's credentials tab, generate a new <strong>API Key</strong> (e.g., <code>my-secret-key</code>).</li>
       </ol>
+
+      <h3>Testing Script</h3>
+      <p>Test the policy by including the API key in the headers. Without this header, Kong will reject the request with a 401 Unauthorized.</p>
 <pre><code>curl -X POST "$KONNECT_PROXY_URL/v1/chat/completions" \
   -H "apikey: my-secret-key" \
   -H "Content-Type: application/json" \
   --json '{
-    "messages": [{"role": "user", "content": "Hello Kong!"}],
+    "messages": [{"role": "user", "content": "Are you secure?"}],
     "model": "my-gpt-4o"
   }'</code></pre>
     </section>
@@ -308,10 +322,24 @@ EOF</code></pre>
       <ol>
         <li>Navigate to your AI Model (<code>my-gpt-4o</code>) and open the <strong>Policies</strong> tab.</li>
         <li>Add the <strong>AI Rate Limiting Advanced</strong> policy.</li>
-        <li>Set the Strategy to <code>local</code> (for testing) or <code>redis</code> (for production).</li>
-        <li>Under limits, specify a token limit by entering JSON: <code>[ { "limit": 2000, "window_size": 60 } ]</code>.</li>
+        <li>Set the Strategy to <code>local</code> (for testing).</li>
+        <li>Under limits, specify a very low token limit for testing: <code>[ { "limit": 100, "window_size": 60 } ]</code>.</li>
         <li>Ensure the limit type is explicitly set to <strong>Tokens</strong>.</li>
       </ol>
+
+      <h3>Testing Script</h3>
+      <p>Run a loop to rapidly consume your token limit. After a couple of requests, Kong will block the traffic with a `429 Too Many Requests` error.</p>
+<pre><code>for i in {1..5}; do
+  echo "Request $i:"
+  curl -i -s -X POST "$KONNECT_PROXY_URL/v1/chat/completions" \
+    -H "apikey: my-secret-key" \
+    -H "Content-Type: application/json" \
+    --json '{
+      "messages": [{"role": "user", "content": "Write a long story about API Gateways."}],
+      "model": "my-gpt-4o"
+    }' | head -n 15
+  echo -e "\n----------------------------------------\n"
+done</code></pre>
     </section>
 
     <section id="semantic-prompt-guard">
@@ -327,6 +355,26 @@ EOF</code></pre>
           </ul>
         </li>
       </ol>
+
+      <h3>Testing Script</h3>
+      <p>Test the guard by sending an allowed prompt, and then a denied prompt. The denied prompt will be intercepted by Kong before reaching the LLM.</p>
+<pre><code># Test 1: Allowed Prompt (Will Succeed)
+curl -X POST "$KONNECT_PROXY_URL/v1/chat/completions" \
+  -H "apikey: my-secret-key" \
+  -H "Content-Type: application/json" \
+  --json '{
+    "messages": [{"role": "user", "content": "What is an API Gateway?"}],
+    "model": "my-gpt-4o"
+  }'
+
+# Test 2: Denied Prompt (Will fail with 400 Bad Request / Denied Topic)
+curl -X POST "$KONNECT_PROXY_URL/v1/chat/completions" \
+  -H "apikey: my-secret-key" \
+  -H "Content-Type: application/json" \
+  --json '{
+    "messages": [{"role": "user", "content": "What stocks should I invest my retirement savings in today?"}],
+    "model": "my-gpt-4o"
+  }'</code></pre>
     </section>
 
     <section id="semantic-caching">
@@ -336,8 +384,29 @@ EOF</code></pre>
         <li>Navigate to the <strong>Policies</strong> tab of your AI Model and add the <strong>AI Semantic Caching</strong> policy.</li>
         <li>Select your configured Embeddings Provider within the policy settings.</li>
         <li>Set the <strong>Distance Threshold</strong> to <code>0.15</code>.</li>
-        <li>Configure a Redis connection for the backend datastore where embeddings and LLM responses will be cached.</li>
+        <li>Configure a Redis connection for the backend datastore (or use memory for simple testing).</li>
       </ol>
+
+      <h3>Testing Script</h3>
+      <p>Run the identical test twice. The second request will be significantly faster and may include an `X-Cache-Status: HIT` header depending on config.</p>
+<pre><code># Run this once (will take a few seconds as it hits OpenAI)
+curl -X POST "$KONNECT_PROXY_URL/v1/chat/completions" \
+  -H "apikey: my-secret-key" \
+  -H "Content-Type: application/json" \
+  --json '{
+    "messages": [{"role": "user", "content": "Explain Kong API Gateway in one sentence."}],
+    "model": "my-gpt-4o"
+  }'
+
+# Run it again (or slightly reworded: "Describe Kong API Gateway in 1 sentence.")
+# Notice the near-instant response time!
+curl -X POST "$KONNECT_PROXY_URL/v1/chat/completions" \
+  -H "apikey: my-secret-key" \
+  -H "Content-Type: application/json" \
+  --json '{
+    "messages": [{"role": "user", "content": "Describe Kong API Gateway in 1 sentence."}],
+    "model": "my-gpt-4o"
+  }'</code></pre>
     </section>
 
     <section id="semantic-routing">
@@ -353,27 +422,51 @@ EOF</code></pre>
           </ul>
         </li>
       </ol>
+
+      <h3>Testing Script</h3>
+      <p>Send two distinct queries and observe which model actually fulfills the response.</p>
+<pre><code># Test 1: Creative writing routes to OpenAI
+curl -X POST "$KONNECT_PROXY_URL/v1/chat/completions" \
+  -H "apikey: my-secret-key" \
+  -H "Content-Type: application/json" \
+  --json '{
+    "messages": [{"role": "user", "content": "Write a short poem about clouds."}],
+    "model": "my-gpt-4o"
+  }'
+
+# Test 2: Data extraction routes to Mistral
+curl -X POST "$KONNECT_PROXY_URL/v1/chat/completions" \
+  -H "apikey: my-secret-key" \
+  -H "Content-Type: application/json" \
+  --json '{
+    "messages": [{"role": "user", "content": "Extract the names and ages from this text: Alice is 30, Bob is 25. Output strictly as JSON."}],
+    "model": "my-gpt-4o"
+  }'</code></pre>
     </section>
 
     <section id="prompt-decorator">
       <h2>6. Prompt Decorator & Template Policies</h2>
       <p>Ensure users are supplying appropriately formatted context without giving them direct control over your system instructions.</p>
       
-      <h3>AI Prompt Decorator</h3>
-      <ol>
-        <li>Add the <strong>AI Prompt Decorator</strong> policy to your AI Model.</li>
-        <li>Set the role to <code>system</code>.</li>
-        <li>Add text to inject invisibly, e.g., <code>"You are a helpful assistant for Kong API Gateway. Format output in Markdown."</code></li>
-        <li>Choose <code>prepend</code> to array to inject this before the user's message.</li>
-      </ol>
-
       <h3>AI Prompt Template</h3>
       <ol>
         <li>Add the <strong>AI Prompt Template</strong> policy to your AI Model.</li>
         <li>Create a template named <code>support-query</code>.</li>
         <li>Template body using Mustache syntax: <code>"Answer the following user question: {{question}}. Context: {{context}}"</code>.</li>
-        <li>Set <strong>Allow Untemplated Requests</strong> to <code>false</code> to block raw payloads and enforce the structured contract.</li>
+        <li>Set <strong>Allow Untemplated Requests</strong> to <code>false</code> to block raw payloads.</li>
       </ol>
+
+      <h3>Testing Script</h3>
+      <p>With `Allow Untemplated Requests` set to false, standard OpenAI request arrays will be blocked. Instead, pass a custom JSON object that Kong will map into your mustache template.</p>
+<pre><code># Test: Using the custom template payload
+curl -X POST "$KONNECT_PROXY_URL/v1/chat/completions" \
+  -H "apikey: my-secret-key" \
+  -H "Content-Type: application/json" \
+  --json '{
+    "question": "How do I setup routing?",
+    "context": "I am using Kong AI Gateway 2.0.",
+    "model": "my-gpt-4o"
+  }'</code></pre>
     </section>
 
     <section id="mcp">
@@ -389,6 +482,16 @@ EOF</code></pre>
         <li>Map specific OpenAPI specification endpoints to MCP Tools so the AI Model understands the schema and capabilities.</li>
         <li>Apply standard Policies (like Rate Limiting or Key Auth) directly to the MCP Server entity just as you would an AI Model.</li>
       </ol>
+
+      <h3>Testing Script</h3>
+      <p>Send a prompt that naturally requires the LLM to invoke the MCP weather tool.</p>
+<pre><code>curl -X POST "$KONNECT_PROXY_URL/v1/chat/completions" \
+  -H "apikey: my-secret-key" \
+  -H "Content-Type: application/json" \
+  --json '{
+    "messages": [{"role": "user", "content": "What is the current weather in San Francisco?"}],
+    "model": "my-gpt-4o"
+  }'</code></pre>
     </section>
 
     <section id="a2a">
@@ -413,16 +516,27 @@ EOF</code></pre>
 
       <p>Start the agent:</p>
 <pre><code>docker compose up -d --wait</code></pre>
-      <p>The agent listens on port <code>10000</code> and uses the A2A JSON-RPC protocol to handle flight route queries.</p>
 
       <h3>Create an AI Agent Entity</h3>
-      <p>AI Gateway acts as a control and observability layer for A2A traffic, enabling you to route agent-to-agent requests, extract task metadata, and rewrite agent card URLs.</p>
       <ol>
         <li>In Konnect UI, navigate to <strong>AI Agents</strong>.</li>
         <li>Click <strong>New AI Agent</strong>.</li>
         <li>Define the upstream Target URL pointing to your agent container (e.g., <code>http://host.docker.internal:10000</code>).</li>
-        <li>Attach an <strong>OpenTelemetry</strong> policy to your AI Agent entity to export A2A traces (task IDs, JSON-RPC method calls, payloads) and metrics to your observability backend.</li>
+        <li>Attach an <strong>OpenTelemetry</strong> policy to your AI Agent entity to export A2A traces (task IDs, JSON-RPC method calls, payloads).</li>
       </ol>
+
+      <h3>Testing Script</h3>
+      <p>Test the A2A connectivity by sending a JSON-RPC request to the AI Agent via Kong.</p>
+<pre><code>curl -X POST "$KONNECT_PROXY_URL/agents/kongair/chat" \
+  -H "Content-Type: application/json" \
+  --json '{
+    "jsonrpc": "2.0",
+    "method": "chat",
+    "params": {
+      "message": "Find me a flight from New York to London next week."
+    },
+    "id": 1
+  }'</code></pre>
     </section>
 
   </main>
@@ -432,7 +546,6 @@ EOF</code></pre>
       const sections = document.querySelectorAll('section');
       const navLinks = document.querySelectorAll('.nav-link');
 
-      // Intersection Observer for highlighting sidebar links on scroll
       const observerOptions = {
         root: null,
         rootMargin: '-20% 0px -75% 0px',
@@ -455,7 +568,6 @@ EOF</code></pre>
 
       sections.forEach(section => observer.observe(section));
 
-      // Click event for smooth scrolling
       navLinks.forEach(link => {
         link.addEventListener('click', function(e) {
           e.preventDefault();
@@ -464,7 +576,7 @@ EOF</code></pre>
           
           if (targetSection) {
             window.scrollTo({
-              top: targetSection.offsetTop - 30, // Offset for breathing room
+              top: targetSection.offsetTop - 30,
               behavior: 'smooth'
             });
           }
