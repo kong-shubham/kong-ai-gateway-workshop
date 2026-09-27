@@ -340,8 +340,8 @@ EOF
       <p>Before proceeding with AI Governance, secure your AI Model with API Keys. In Kong AI Gateway 2.0, policies are attached directly to the <strong>AI Model</strong> entity.</p>
       <ol>
         <li>Navigate to your <strong>my-gpt-4o</strong> AI Model in the Konnect UI.</li>
-        <li>Open the <strong>Policies</strong> tab and click <strong>Add Policy</strong>.</li>
-        <li>Search for <strong>Key Authentication</strong> and enable it. Leave the default settings (Header name: <code>apikey</code>).</li>
+        <li>Open the <strong>Access</strong> tab and click <strong>Add  auth strategy</strong>.</li>
+        <li>give a Diplay Name<strong>Key-Auth</strong> Leave the default settings (Header name: <code>apikey</code>).</li>
         <li>Go to <strong>Consumers</strong> in the left menu, create a new consumer named <code>ai-developer</code>.</li>
         <li>Under the consumer's credentials tab, generate a new <strong>API Key</strong> (e.g., <code>my-secret-key</code>).</li>
       </ol>
