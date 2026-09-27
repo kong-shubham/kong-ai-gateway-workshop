@@ -343,7 +343,7 @@ EOF
         <li>Open the <strong>Access</strong> tab and click <strong>Add  auth strategy</strong>.</li>
         <li>give a Diplay Name say <strong>Key-Auth</strong> Leave the default settings (Header name: <code>apikey</code>). Click add</li>
         <li>Go to <strong>Consumers tab in AI gateway </strong> in the left menu, create a new consumer of type API Key, Give Display Name and Consumer Id as and click Next <code>ai-developer</code>.</li>
-        <li>Under the consumer's credentials tab, generate a new <strong>API Key or type it in , click Creat Key </strong> (e.g., <code>my-secret-key</code>).</li>
+        <li>Under the consumer's credentials tab, generate a new <strong>API Key or type it in, click Create Key </strong> (e.g., <code>my-secret-key</code>).</li>
       </ol>
 
       <h3>Testing Script</h3>
@@ -367,9 +367,9 @@ EOF
         <li>Navigate to your AI Model (<code>my-gpt-4o</code>) and open the <strong>Policies</strong> tab.</li>
         <li>Add the <strong>AI Rate Limiting Advanced</strong> policy. in Policies , add Limit </li>
         <li>Set the Strategy to <code>local</code> (for testing purposes).</li>
-        <li>Under limits, specify a very low token limit for testing: <code>[ { "limit": 100, "window_size": 60 } ] keep other default settings</code>.</li>
+        <li>Under limits, specify a very low token limit for testing: <code>[ { "limit": 200, "window_size": 60 } ]</code>  keep other default settings .</li>
         <li>Ensure the Tokens count strategy is explicitly set to <strong>total_okens</strong> click Save and Next.</li>
-        <li>Click add entiry <strong> set you model name my-gpt-4o </strong> done </li>
+        <li>Click add entiry <strong> set your model name my-gpt-4o </strong> done </li>
       </ol>
 
       <h3>Testing Script</h3>
@@ -394,8 +394,10 @@ done</code></pre>
       <h2>3. Semantic Prompt Guard Policy</h2>
       <p>Stop relying on rigid regex keywords to block malicious intent. The Semantic Prompt Guard policy uses vector embeddings to block requests based on the <em>meaning</em> of the prompt.</p>
       <ol>
-        <li>In the Konnect UI, ensure you have an <strong>Embeddings Provider</strong> configured (e.g., using OpenAI's `text-embedding-3-small`).</li>
+        <li> download redis/redis-stack image and start the container, make sure that it is listening to port 6379 .</li>
         <li>Navigate to the <strong>Policies</strong> tab of your AI Model and add the <strong>AI Semantic Prompt Guard</strong> policy.</li>
+         <li>select the provider name openai and name <strong>text-embedding-3-small</strong> chech Auth and Provide Header Name : Authoriztion and Value : Bearer sk-- key   </li>
+        <li> select startegy as redis, provide redis host name <strong>host.docker.internal</strong> and port <strong>6379</strong> </li>
         <li>Configure the <strong>Deny Topics</strong> array with natural language intents. Example entries: 
           <ul>
             <li><code>"Provide financial or investment advice"</code></li>
