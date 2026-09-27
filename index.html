@@ -435,9 +435,9 @@ curl -X POST "$KONNECT_PROXY_URL/v1/chat/completions" \
       <p>Serve responses instantly for functionally identical prompts by evaluating vector embeddings. If a user asks "What is Kong?" and later asks "Explain Kong to me", the gateway serves the cached response.</p>
       <ol>
         <li>Navigate to the <strong>Policies</strong> tab of your AI Model and add the <strong>AI Semantic Caching</strong> policy.</li>
-        <li>Select your configured Embeddings Provider within the policy settings.</li>
-        <li>Set the <strong>Distance Threshold</strong> to <code>0.15</code>.</li>
-        <li>Configure a Redis connection for the backend datastore (or use memory for simple testing).</li>
+        <li>configure embedding provider and redis as in step 3 </li>
+        <li>Set the disance metric to Cosine and  <strong>threshhold</strong> to <code>0.3</code>.</li>
+    
       </ol>
 
       <h3>Testing Script</h3>
