@@ -365,10 +365,11 @@ EOF
       <p>The AI Rate Limiting Advanced policy restricts traffic based on the total number of LLM <strong>tokens</strong> processed, allowing you to control true financial costs rather than just HTTP requests.</p>
       <ol>
         <li>Navigate to your AI Model (<code>my-gpt-4o</code>) and open the <strong>Policies</strong> tab.</li>
-        <li>Add the <strong>AI Rate Limiting Advanced</strong> policy. in Policies , click add policy </li>
+        <li>Add the <strong>AI Rate Limiting Advanced</strong> policy. in Policies , add Limit </li>
         <li>Set the Strategy to <code>local</code> (for testing purposes).</li>
         <li>Under limits, specify a very low token limit for testing: <code>[ { "limit": 100, "window_size": 60 } ] keep other default settings</code>.</li>
-        <li>Ensure the Tokens count strategy is explicitly set to <strong>total_okens</strong>.</li>
+        <li>Ensure the Tokens count strategy is explicitly set to <strong>total_okens</strong> click Save and Next.</li>
+        <li>Click add entiry <strong> set you model name my-gpt-4o </strong> done </li>
       </ol>
 
       <h3>Testing Script</h3>
