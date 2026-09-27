@@ -304,15 +304,17 @@ ai_gateway_models:
           body_param: model
           values:
             - my-gpt-4o
-      targets:
-        - name: gpt-4o
-          provider: generic-openai
-          config:
-            type: openai
-      policies: []
-      capabilities:
-        - generate
-EOF</code></pre>
+    targets:
+      - name: gpt-4o
+        provider: generic-openai
+        config:
+          type: openai
+    policies: []
+    capabilities:
+      - generate
+EOF
+        
+        </code></pre>
       </div>
 
       <h3>Testing Script</h3>
