@@ -341,9 +341,9 @@ EOF
       <ol>
         <li>Navigate to your <strong>my-gpt-4o</strong> AI Model in the Konnect UI.</li>
         <li>Open the <strong>Access</strong> tab and click <strong>Add  auth strategy</strong>.</li>
-        <li>give a Diplay Name<strong>Key-Auth</strong> Leave the default settings (Header name: <code>apikey</code>).</li>
-        <li>Go to <strong>Consumers</strong> in the left menu, create a new consumer named <code>ai-developer</code>.</li>
-        <li>Under the consumer's credentials tab, generate a new <strong>API Key</strong> (e.g., <code>my-secret-key</code>).</li>
+        <li>give a Diplay Name say <strong>Key-Auth</strong> Leave the default settings (Header name: <code>apikey</code>). Click add</li>
+        <li>Go to <strong>Consumers tab in AI gateway </strong> in the left menu, create a new consumer of type API Key, Give Display Name and Consumer Id as and click Next <code>ai-developer</code>.</li>
+        <li>Under the consumer's credentials tab, generate a new <strong>API Key or type it in , click Creat Key </strong> (e.g., <code>my-secret-key</code>).</li>
       </ol>
 
       <h3>Testing Script</h3>
@@ -365,10 +365,10 @@ EOF
       <p>The AI Rate Limiting Advanced policy restricts traffic based on the total number of LLM <strong>tokens</strong> processed, allowing you to control true financial costs rather than just HTTP requests.</p>
       <ol>
         <li>Navigate to your AI Model (<code>my-gpt-4o</code>) and open the <strong>Policies</strong> tab.</li>
-        <li>Add the <strong>AI Rate Limiting Advanced</strong> policy.</li>
+        <li>Add the <strong>AI Rate Limiting Advanced</strong> policy. in Policies , click add policy </li>
         <li>Set the Strategy to <code>local</code> (for testing purposes).</li>
-        <li>Under limits, specify a very low token limit for testing: <code>[ { "limit": 100, "window_size": 60 } ]</code>.</li>
-        <li>Ensure the limit type is explicitly set to <strong>Tokens</strong>.</li>
+        <li>Under limits, specify a very low token limit for testing: <code>[ { "limit": 100, "window_size": 60 } ] keep other default settings</code>.</li>
+        <li>Ensure the Tokens count strategy is explicitly set to <strong>total_okens</strong>.</li>
       </ol>
 
       <h3>Testing Script</h3>
