@@ -544,22 +544,43 @@ curl -X POST "$KONNECT_PROXY_URL/v1/chat/completions" \
       </div>
       <ol>
         <li>Navigate to the <strong>MCP Servers</strong> tab in your Konnect AI Gateway dashboard.</li>
-        <li>Click <strong>New MCP Server</strong>. Give it a name (e.g., <code>weather-mcp</code>).</li>
-        <li>Define the upstream URL of your MCP-compliant service.</li>
-        <li>Map specific OpenAPI specification endpoints to MCP Tools so the AI Model understands the schema and capabilities.</li>
-        <li>Apply standard Policies (like Rate Limiting or Key Auth) directly to the MCP Server entity.</li>
+        <li>Click <strong>New MCP Server</strong>. Give it a displau name (e.g., <code>weather-mcp</code>).</li>
+        <li> Select passthrough-listener, Define the upstream URL of your MCP-compliant service. <code>https://api.weatherapi.com/v1/current.json</code> click Next</li>
+        <li>selct base path and  <code>/weather</code></li>
+        <li>click add tool give name, description <strong>Get current weather for a location</strong> path <code>/weather</code> method GET </li>
+        <li>query  <strong>key</strong>  value <strong>42ed979248f14e1fa01130855250411</strong></li>
+        <li> Parameter  <code>[
+  {
+    "description": "Location query. Accepts US Zipcode, UK Postcode, Canada Postalcode, IP address, latitude/longitude, or city name.",
+    "in": "query",
+    "name": "q",
+    "required": true,
+    "schema": {
+      "type": "string"
+    }
+  }
+] </code></li>
       </ol>
 
       <h3>Testing Script</h3>
       <div class="code-container">
         <button class="copy-btn">Copy</button>
-        <pre><code>curl -X POST "$KONNECT_PROXY_URL/v1/chat/completions" \
-  -H "apikey: my-secret-key" \
-  -H "Content-Type: application/json" \
-  --json '{
-    "messages": [{"role": "user", "content": "What is the current weather in San Francisco?"}],
-    "model": "my-gpt-4o"
-  }'</code></pre>
+        <pre><code>curl -X POST "$KONNECT_PROXY_URL/weather/" \
+     --no-progress-meter --fail-with-body  \
+     -H "Content-Type: application/json"\
+     -H "Accept: application/json, text/event-stream"\
+     -H "Mcp-Session-Id: $SESSION_ID" \
+     --json '{
+       "jsonrpc": "2.0",
+       "id": 3,
+       "method": "tools/call",
+       "params": {
+         "name": "get-current-weather",
+         "arguments": {
+           "query_q": "London"
+         }
+       }
+     }'</code></pre>
       </div>
     </section>
 
