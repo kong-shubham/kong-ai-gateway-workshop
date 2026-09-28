@@ -547,9 +547,9 @@ curl -X POST "$KONNECT_PROXY_URL/v1/chat/completions" \
         <li>Click <strong>New MCP Server</strong>. Give it a displau name (e.g., <code>weather-mcp</code>).</li>
         <li> Select passthrough-listener, Define the upstream URL of your MCP-compliant service. <code>https://api.weatherapi.com/v1/current.json</code> click Next</li>
         <li>selct base path and  <code>/weather</code></li>
-        <li>click add tool give name, description <strong>Get current weather for a location</strong> path <code>/weather</code> method GET </li>
+        <li>click add tool,  give it a name <strong>get-current-weather<strong> provide description <strong>Get current weather for a location</strong> path <code>/weather</code> method <strong>GET</strong> </li>
         <li>query  <strong>key</strong>  value <strong>42ed979248f14e1fa01130855250411</strong></li>
-        <li> Parameter  <code>[
+        <li> provide Parameter as below and done  <code>[
   {
     "description": "Location query. Accepts US Zipcode, UK Postcode, Canada Postalcode, IP address, latitude/longitude, or city name.",
     "in": "query",
